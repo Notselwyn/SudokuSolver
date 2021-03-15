@@ -96,7 +96,8 @@ def main():
                     num_index -= 2
                 else:
                     plus_one = False
-
+            
+            # Keep +1'ing the value, until it's valid or if it hits 10, back track gets actived
             while new_array_flat[num_index] in crosshair_cells and plus_one is False:
                 new_array_flat[num_index] += 1
                 if new_array_flat[num_index] > 9:
@@ -105,7 +106,8 @@ def main():
                     num_index -= 2
                     plus_one = True
                     break
-
+        
+        # If back track is still enabled, remove -2 from the index, so the index will go 1 down
         elif plus_one is True:
             num_index -= 2
 
@@ -114,12 +116,14 @@ def main():
             num_index = 0
             if plus_one is True:
                 plus_one = False
-
+           
+        # Check if user wants to quit pygame windows
         if run_pygame is True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return False
-
+    
+    # Please don't look at this
     print("Finished - " + str(round(time.time() - time_now, 4)) + "s")
     print("\x1b[48;2;255;255;255m")
     for array_pos, array in enumerate(new_array):
@@ -138,7 +142,7 @@ def main():
     print("")
 
 
-
+    # Initiate the final screen in pygame
     if run_pygame is True:
         while True:
             for event in pygame.event.get():
