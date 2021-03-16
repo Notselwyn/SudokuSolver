@@ -1,4 +1,5 @@
 import numpy as np
+import pygame
 import time
 
 
@@ -17,6 +18,41 @@ def main():
         [0, 0, 5, 0, 0, 0, 0, 4, 0]
     ]
 
+    pygame.init()  # Start the pygame sequence
+    clock = pygame.time.Clock()  # Create pygame clock
+    size = [600, 600]  # Screen size
+    # Defining colors
+    black = (0, 0, 0)
+    white = (255, 255, 255)
+    red = (255, 0, 0)
+    # Make a pygame screen window with a size of [250, 250]
+    screen = pygame.display.set_mode(size)
+    grids = pygame.surface.Surface(size)
+    grids.fill([255, 255, 255])
+
+    for i in range(1, 9):
+        if i % 3 == 0:
+            pygame.draw.line(grids, [0, 0, 0], (int(i * size[0] // 4.5 // 2), 0), (int(i * size[0] // 4.5 // 2), size[0]), 10)
+            pygame.draw.line(grids, [0, 0, 0], (0, int(i * size[0] // 4.5 // 2)), (size[0], int(i * size[0] // 4.5 // 2)), 10)
+        else:
+            pygame.draw.line(grids, [0, 0, 0], (int(i * size[0] // 4.5 // 2), 0), (int(i * size[0] // 4.5 // 2), size[0]), 5)
+            pygame.draw.line(grids, [0, 0, 0], (0, int(i * size[0] // 4.5 // 2)), (size[0], int(i * size[0] // 4.5 // 2)), 5)
+
+    font = pygame.font.Font('freesansbold.ttf', 40)  # Make a font
+    pygame.display.set_caption('Sudo Solver: Back Track')
+
+    def render_screen():
+        for sub_row_index, sub_row in enumerate(new_array):
+            for sub_num_index, sub_num in enumerate(sub_row):
+                if sub_num != 0:
+                    if first_array[sub_row_index][sub_num_index] != 0:
+                        text = font.render(str(first_array[sub_row_index][sub_num_index]), True, red, white)
+                    else:
+                        text = font.render(str(int(sub_num)), True, black, white)
+                    textRect = text.get_rect()
+                    textRect.center = (sub_num_index * 67 + 32, sub_row_index * 67 + 37)
+                    screen.blit(text, textRect)
+
     # Required variables to start running
     # Some of these are not necessary, but more efficient
     first_array_flat = [x for y in first_array for x in y]
@@ -28,6 +64,10 @@ def main():
     time_now = time.time()
 
     while num_index < 81:
+        screen.blit(grids, (0, 0))
+        render_screen()
+        pygame.display.flip()
+
         new_array = np.reshape(new_array_flat, (9, 9))
         threebythree_box = new_array[(num_index // 27) * 3:(num_index // 27) * 3 + 3, num_index % 9 // 3 * 3:num_index % 9 // 3 * 3 + 3].tolist()
         crosshair_cells = new_array[num_index // 9, :].tolist() + new_array[:, num_index % 9].tolist() + [x for y in threebythree_box for x in y]
@@ -65,6 +105,10 @@ def main():
 
         num_index += 1
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+
     print("Finished - " + str(round(time.time() - time_now, 4)) + "s")
     for array_pos, array in enumerate(new_array):
         result_str = "\x1b[48;2;255;255;255m"
@@ -82,6 +126,15 @@ def main():
         result_str += "\x1b[0m"
 
         print(result_str)
+
+
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+        pygame.display.flip()
+        clock.tick(30)
 
 
 if __name__ == '__main__':
