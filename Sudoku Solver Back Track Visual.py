@@ -143,7 +143,7 @@ def main():
         threebythree_box = new_array[(num_index // 27) * 3:(num_index // 27) * 3 + 3, num_index % 9 // 3 * 3:num_index % 9 // 3 * 3 + 3].tolist()
         crosshair_cells = new_array[num_index // 9, :].tolist() + new_array[:, num_index % 9].tolist() + [x for y in threebythree_box for x in y]
 
-        if num_index == 80:
+        if num_index == 80 and first_array_flat[num_index] == 0:
             new_array[num_index // 9][num_index % 9] = [x for x in range(1, 10) if x not in crosshair_cells][-1]
             new_array_flat[num_index] = [x for x in range(1, 10) if x not in crosshair_cells][-1]
 
@@ -176,7 +176,6 @@ def main():
 
         # If current value is a fixed value from sudoku, go back 1 cell
         elif plus_one is True:
-            print(num_index)
             num_index -= 2
 
         num_index += 1
