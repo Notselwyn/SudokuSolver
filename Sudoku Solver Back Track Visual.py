@@ -6,21 +6,36 @@ import time
 def main():
     # Enter sudoku here!!!
     # The numbers are the cells in the sudoku
+    #first_array = [
+    #    [0, 0, 1, 0, 6, 0, 0, 5, 9],
+    #    [0, 0, 0, 0, 0, 3, 0, 2, 0],
+    #    [0, 6, 0, 0, 8, 0, 0, 0, 0],
+    #    [4, 0, 0, 0, 0, 0, 5, 0, 0],
+    #    [0, 2, 0, 0, 0, 0, 0, 0, 0],
+    #    [0, 7, 0, 2, 0, 0, 4, 8, 0],
+    #    [8, 0, 0, 0, 0, 0, 9, 0, 5],
+    #    [7, 0, 0, 6, 0, 9, 0, 3, 0],
+    #    [0, 0, 5, 0, 0, 0, 0, 4, 0]
+    #]
+    new_array = []
     first_array = [
-        [0, 0, 1, 0, 6, 0, 0, 5, 9],
-        [0, 0, 0, 0, 0, 3, 0, 2, 0],
-        [0, 6, 0, 0, 8, 0, 0, 0, 0],
-        [4, 0, 0, 0, 0, 0, 5, 0, 0],
-        [0, 2, 0, 0, 0, 0, 0, 0, 0],
-        [0, 7, 0, 2, 0, 0, 4, 8, 0],
-        [8, 0, 0, 0, 0, 0, 9, 0, 5],
-        [7, 0, 0, 6, 0, 9, 0, 3, 0],
-        [0, 0, 5, 0, 0, 0, 0, 4, 0]
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
+    first_array_flat = [x for y in first_array for x in y]
+    new_array = np.nan_to_num(np.array(first_array.copy(), dtype=int))
+    new_array_flat = [x for y in new_array for x in y]
 
     pygame.init()  # Start the pygame sequence
     clock = pygame.time.Clock()  # Create pygame clock
-    size = [600, 600]  # Screen size
+    size = [600, 700]  # Screen size
     # Defining colors
     black = (0, 0, 0)
     white = (255, 255, 255)
@@ -30,6 +45,7 @@ def main():
     grids = pygame.surface.Surface(size)
     grids.fill([255, 255, 255])
 
+
     for i in range(1, 9):
         if i % 3 == 0:
             pygame.draw.line(grids, [0, 0, 0], (int(i * size[0] // 4.5 // 2), 0), (int(i * size[0] // 4.5 // 2), size[0]), 10)
@@ -38,13 +54,16 @@ def main():
             pygame.draw.line(grids, [0, 0, 0], (int(i * size[0] // 4.5 // 2), 0), (int(i * size[0] // 4.5 // 2), size[0]), 5)
             pygame.draw.line(grids, [0, 0, 0], (0, int(i * size[0] // 4.5 // 2)), (size[0], int(i * size[0] // 4.5 // 2)), 5)
 
-    font = pygame.font.Font('freesansbold.ttf', 40)  # Make a font
+    def font_size(n):
+        return pygame.font.Font('freesansbold.ttf', n)
+
+    font = pygame.font.Font('freesansbold.ttf', 40)
     pygame.display.set_caption('Sudo Solver: Back Track')
 
-    def render_screen():
+    def render_screen(intro=False):
         for sub_row_index, sub_row in enumerate(new_array):
             for sub_num_index, sub_num in enumerate(sub_row):
-                if sub_num != 0:
+                if sub_num != 0 or (intro is True and first_array[sub_row_index][sub_num_index] != 0):
                     if first_array[sub_row_index][sub_num_index] != 0:
                         text = font.render(str(first_array[sub_row_index][sub_num_index]), True, red, white)
                     else:
@@ -53,31 +72,87 @@ def main():
                     textRect.center = (sub_num_index * 67 + 32, sub_row_index * 67 + 37)
                     screen.blit(text, textRect)
 
+
     # Required variables to start running
     # Some of these are not necessary, but more efficient
-    first_array_flat = [x for y in first_array for x in y]
-    new_array = np.nan_to_num(np.array(first_array.copy(), dtype=int))
-    new_array_flat = [x for y in new_array for x in y]
     num_index = 0
+    fps = 200
+    selected_num = 1
     plus_one = False
+    ready = False
+    spacing = 50
+    select_num_offset = 10
 
+    nums_to_click = []
+
+    while ready is False:
+        # These 3 lines are necessary in all apps. It makes the window close instead of freeze when you press the close button
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:  # If a user presses a mouse button:
+                mouse_pos = event.pos  # Mouse position = event position
+
+                if mouse_pos[1] > 600:
+                    selected_num = range(1, 11)[max(0, (min(10, mouse_pos[0]//spacing-1)))]
+                    if selected_num == 10:
+                        ready = True
+                    break
+
+                elif 0 < mouse_pos[1] < 600:
+                    first_array[mouse_pos[1]//(600 // 9)][mouse_pos[0]//(600 // 9)] = selected_num
+                    first_array_flat = [x for y in first_array for x in y]
+                    new_array = np.nan_to_num(np.array(first_array.copy(), dtype=int))
+                    new_array_flat = [x for y in new_array for x in y]
+
+            else:
+                for i in range(1, 10):
+                    if event.type == eval(f"pygame.K_{i}"):
+                        selected_num = i
+                        print("yes")
+
+        # Updates the screen. This is necessary otherwise the screen will freeze
+        for pos, button in enumerate(nums_to_click):
+            screen.blit(button[0], button[1])
+
+        screen.fill((255, 255, 255))
+        screen.blit(grids, (0, 0))
+        render_screen(intro=True)                   # Top left                   Mid right                  Down left
+        pygame.draw.polygon(screen, (0, 210, 0), [[size[0]-90, size[1]-75], [size[0]-50, size[1]-55], [size[0]-90, size[1]-35]], 0)
+
+        for i in range(1, 10):
+            if i != selected_num:
+                text = font_size(50).render(str(i), True, (100, 100, 255), white)
+            else:
+                text = font_size(70).render(str(i), True, (100, 100, 255), white)
+
+            textRect = text.get_rect()
+            textRect.center = (i*spacing+select_num_offset, 650)
+            nums_to_click.append([text, textRect])
+            screen.blit(text, textRect)
+
+        pygame.display.flip()
+        clock.tick(fps / 2)
+
+    screen = pygame.display.set_mode((size[0], size[1]-100))
     time_now = time.time()
 
     while num_index < 81:
-        screen.blit(grids, (0, 0))
-        render_screen()
-        pygame.display.flip()
-
         new_array = np.reshape(new_array_flat, (9, 9))
         threebythree_box = new_array[(num_index // 27) * 3:(num_index // 27) * 3 + 3, num_index % 9 // 3 * 3:num_index % 9 // 3 * 3 + 3].tolist()
         crosshair_cells = new_array[num_index // 9, :].tolist() + new_array[:, num_index % 9].tolist() + [x for y in threebythree_box for x in y]
+
+        if num_index == 80:
+            new_array[num_index // 9][num_index % 9] = [x for x in range(1, 10) if x not in crosshair_cells][-1]
+            new_array_flat[num_index] = [x for x in range(1, 10) if x not in crosshair_cells][-1]
 
         # Removing the active num from crosshairs: Horizontal, Vertical, 3x3 Box
         crosshair_cells.pop(num_index % 9)
         crosshair_cells.pop(num_index // 9 + 8)
         crosshair_cells.pop(16 + ((num_index % 9) // 9) * 3 + (num_index % 3))
 
-        # Check if the number isn't one of the pre-defined one from the original sudoku
+        # Check if the number isn't one of the pre-defined one from the original sudoku\
         if first_array_flat[num_index] == 0:
             # Check if back-track is active, if it is then do +1, if it is over 9 after +1, keep it activated
             if plus_one is True:
@@ -101,6 +176,7 @@ def main():
 
         # If current value is a fixed value from sudoku, go back 1 cell
         elif plus_one is True:
+            print(num_index)
             num_index -= 2
 
         num_index += 1
@@ -108,6 +184,10 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
+
+        screen.blit(grids, (0, 0))
+        render_screen()
+        pygame.display.flip()
 
     print("Finished - " + str(round(time.time() - time_now, 4)) + "s")
     for array_pos, array in enumerate(new_array):
