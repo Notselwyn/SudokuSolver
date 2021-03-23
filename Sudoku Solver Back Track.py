@@ -6,15 +6,15 @@ def main():
     # Enter sudoku here!!!
     # The numbers are the cells in the sudoku
     first_array = [
-        [0, 0, 1, 0, 6, 0, 0, 5, 9],
-        [0, 0, 0, 0, 0, 3, 0, 2, 0],
-        [0, 6, 0, 0, 8, 0, 0, 0, 0],
-        [4, 0, 0, 0, 0, 0, 5, 0, 0],
-        [0, 2, 0, 0, 0, 0, 0, 0, 0],
-        [0, 7, 0, 2, 0, 0, 4, 8, 0],
-        [8, 0, 0, 0, 0, 0, 9, 0, 5],
-        [7, 0, 0, 6, 0, 9, 0, 3, 0],
-        [0, 0, 5, 0, 0, 0, 0, 4, 0]
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
 
     # Required variables to start running
@@ -31,6 +31,10 @@ def main():
         new_array = np.reshape(new_array_flat, (9, 9))
         threebythree_box = new_array[(num_index // 27) * 3:(num_index // 27) * 3 + 3, num_index % 9 // 3 * 3:num_index % 9 // 3 * 3 + 3].tolist()
         crosshair_cells = new_array[num_index // 9, :].tolist() + new_array[:, num_index % 9].tolist() + [x for y in threebythree_box for x in y]
+
+        if num_index == 80:
+            new_array[num_index // 9][num_index % 9] = [x for x in range(1, 10) if x not in crosshair_cells][-1]
+            new_array_flat[num_index] = [x for x in range(1, 10) if x not in crosshair_cells][-1]
 
         # Removing the active num from crosshairs: Horizontal, Vertical, 3x3 Box
         crosshair_cells.pop(num_index % 9)
