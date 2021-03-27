@@ -1,3 +1,5 @@
+from functools import cache
+
 import numpy as np
 import pygame
 import time
@@ -44,7 +46,6 @@ def main():
     screen = pygame.display.set_mode(size)
     grids = pygame.surface.Surface(size)
     grids.fill([255, 255, 255])
-
 
     for i in range(1, 9):
         if i % 3 == 0:
@@ -186,7 +187,8 @@ def main():
 
         screen.blit(grids, (0, 0))
         render_screen()
-        pygame.display.flip()
+        if int((time.time() - time_now) * 100000 % 10) == 0:
+            pygame.display.flip()
 
     print("Finished - " + str(round(time.time() - time_now, 4)) + "s")
     for array_pos, array in enumerate(new_array):
