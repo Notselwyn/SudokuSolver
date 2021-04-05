@@ -107,12 +107,6 @@ def main():
                     new_array = np.nan_to_num(np.array(first_array.copy(), dtype=int))
                     new_array_flat = [x for y in new_array for x in y]
 
-            else:
-                for i in range(1, 10):
-                    if event.type == eval(f"pygame.K_{i}"):
-                        selected_num = i
-                        print("yes")
-
         # Updates the screen. This is necessary otherwise the screen will freeze
         for pos, button in enumerate(nums_to_click):
             screen.blit(button[0], button[1])
