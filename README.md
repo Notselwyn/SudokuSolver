@@ -4,8 +4,10 @@ Solves a sudoku in between 0.1s and 20s.
 ## Usage
 - Define the sudoku in line 8 to 19.
 - Use "Sudoku Solver Back Track".py for performance.
+- Use "Sudoku Solver Back Track".cpp for an even better performance.
 - Use "Sudoku Solver Back Track Visual".py for a visual representation.
-- Keep in mind, the visual is a slower than the original. (Used to be 4500% time, but now its about 110%)
+- Keep in mind, the visual (.py) is a slower than the original (.py) (Used to be 4500% time, but now its about 110%).
+- The C++ version solves a sudoku in milliseconds and the Python version in whole seconds.
 
 ## Footage
 Visual (PyGame Window) and Console Output:
