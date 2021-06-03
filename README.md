@@ -6,8 +6,22 @@ Solves a sudoku in between 0.1s and 20s.
 - Use "Sudoku Solver Back Track".py for performance.
 - Use "Sudoku Solver Back Track".cpp for an even better performance.
 - Use "Sudoku Solver Back Track Visual".py for a visual representation.
-- Keep in mind, the visual (.py) is a slower than the original (.py) (Used to be 4500% time, but now its about 110%).
-- The C++ version solves a sudoku in milliseconds and the Python version in whole seconds.
+
+## Benchmarks
+Measured on the following sudoku:
+5, 3, 0, 0, 7, 0, 0, 0, 0
+6, 0, 0, 1, 9, 5, 0, 0, 0
+0, 9, 8, 0, 0, 0, 0, 6, 0
+8, 0, 0, 0, 6, 0, 0, 0, 3
+4, 0, 0, 8, 0, 3, 0, 0, 1
+7, 0, 0, 0, 2, 0, 0, 0, 6
+0, 6, 0, 0, 0, 0, 2, 8, 0
+0, 0, 0, 4, 1, 9, 0, 0, 5
+0, 0, 0, 0, 8, 0, 0, 7, 0
+
+- Python: 329ms
+- Python visual: 9499ms
+- C++: 54ms
 
 ## Footage
 Visual (PyGame Window) and Console Output:
