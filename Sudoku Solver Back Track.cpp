@@ -1,4 +1,7 @@
 #include <iostream>
+#include <chrono>
+using namespace std::chrono;
+
 
 using namespace std;
 
@@ -26,6 +29,7 @@ int main() {
         }
     }
 
+    auto start = high_resolution_clock::now();
     while (num_index < 81) {
         int new_array[9][9];
         int threebythree_box[3][3];
@@ -60,7 +64,13 @@ int main() {
             }
             new_array[num_index / 9][num_index % 9];
             for (int i=0; i<9; i++) {
+                if (i%3==0 && i!=0) {
+                    cout << "------|-------|-------" << endl;
+                }
                 for (int j=0; j<9; j++) {
+                    if (j%3==0 && j!=0) {
+                        cout << "| ";
+                    }
                     cout << new_array[i][j] << " ";
                 }
                 cout << endl;
@@ -98,5 +108,8 @@ int main() {
         }
         num_index += 1;
     }
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << "Finished - " << duration.count()/1000 << "ms" << endl;
     return 0;
 }
