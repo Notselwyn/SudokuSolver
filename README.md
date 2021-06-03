@@ -21,6 +21,7 @@ Measured on the following sudoku:<br>
 
 - Python: 329ms
 - Python visual: 9499ms
+- Python visual (uncapped): 13392ms
 - C++: 46ms
 
 ## Footage
