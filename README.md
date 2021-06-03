@@ -1,5 +1,5 @@
 # SudokuSolver
-Solves a sudoku in between 0.1s and 20s. 
+Solves a sudoku in the matter of milliseconds
 
 ## Usage
 - Define the sudoku in line 8 to 19.
