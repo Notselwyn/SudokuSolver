@@ -4,18 +4,26 @@
 using namespace std::chrono;
 using namespace std;
 
+int index(int arr[], int n) {
+    for (int i=0; i<sizeof(arr)/4;i++) {
+        if (arr[i] == 0) {
+            return i;
+        }
+    }
+}
+
 int main() {
     // Enter the sudoku here!!!
     // The numbers are the cells in the sudoku
-    int first_array[9][9] = {{0, 0, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0, 0}
+    int first_array[9][9] = {{5, 3, 0, 0, 7, 0, 0, 0, 0},
+                             {6, 0, 0, 1, 9, 5, 0, 0, 0},
+                             {0, 9, 8, 0, 0, 0, 0, 6, 0},
+                             {8, 0, 0, 0, 6, 0, 0, 0, 3},
+                             {4, 0, 0, 8, 0, 3, 0, 0, 1},
+                             {7, 0, 0, 0, 2, 0, 0, 0, 6},
+                             {0, 6, 0, 0, 0, 0, 2, 8, 0},
+                             {0, 0, 0, 4, 1, 9, 0, 0, 5},
+                             {0, 0, 0, 0, 8, 0, 0, 7, 0}
     };
     int first_array_flat[81];
     int new_array[9][9];
@@ -25,6 +33,7 @@ int main() {
     int ra[81];
     int num_index = 0;
     bool plus_one = false;
+    auto start = high_resolution_clock::now();
     for (int i=0; i<9; i++) {
         for (int j=0; j<9; j++) {
             first_array_flat[i*9+j] = first_array[i][j];
@@ -36,8 +45,7 @@ int main() {
     for (int low=0, high=80; low < high; low++, high--){
         swap(ra[low], ra[high]);
     }
-    int end_index = 80-*find(begin(ra), end(ra), 0);
-    auto start = high_resolution_clock::now();
+    int end_index = index(ra, 0);
     while (num_index < 81) {
         for (int i=0; i<81; i++) {
             new_array[i/9][i%9] = new_array_flat[i];
@@ -49,21 +57,27 @@ int main() {
             }
         }
 
+        int h_c=0;
+        int v_c=0;
+        int b_c=0;
         for (int i=0; i<9; i++) {
             if (i != num_index % 9) {
-                crosshair_cells[i] = new_array[num_index/9][i];
+                crosshair_cells[h_c] = new_array[num_index/9][i];
+                h_c+=1;
             }
             if (i != num_index / 9) {
-                crosshair_cells[i+9] = new_array[i][num_index % 9];
+                crosshair_cells[8+v_c] = new_array[i][num_index % 9];
+                v_c+=1;
             }
             if (i != num_index % 3 + num_index / 9 % 3 * 3) {
-                crosshair_cells[i+16] = threebythree_box[i/3][i%3];
+                crosshair_cells[16+b_c] = threebythree_box[i/3][i%3];
+                b_c+=1;
             }
         }
-        if (num_index == end_index) {
+        if (num_index == 80-end_index) {
             for (int i=1; i<10; i++) {
                 if (find(begin(crosshair_cells), end(crosshair_cells), i) == end(crosshair_cells)) {
-                    new_array[end_index/9][end_index%9] = i;
+                    new_array[num_index/9][num_index%9] = i;
                     break;
                 }
             }
@@ -82,7 +96,7 @@ int main() {
                 }
                 cout << endl;
             }
-            cout << endl;
+            return 0;
         }
 
         if (first_array_flat[num_index] == 0) {
@@ -115,5 +129,4 @@ int main() {
         }
         num_index += 1;
     }
-    return 0;
 }
