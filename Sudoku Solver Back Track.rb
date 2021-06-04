@@ -62,7 +62,17 @@ def main
       end
       puts "Finished - " + (((Time.now - start) * 1000).to_i).to_s + "ms"
       9.times do |i|
-        p new_array[i]
+        str = ""
+        if i%3==0 && i!=0
+          puts "-------|-------|-------"
+        end
+        9.times do |j|
+          if j%3==0&&j!=0
+            str += " |"
+          end
+          str += " " + new_array[i][j].to_s
+        end
+        puts str
       end
       break
     end
