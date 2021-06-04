@@ -1,35 +1,22 @@
-from functools import cache
-
 import numpy as np
 import pygame
-import time
+import datetime
 
 
 def main():
     # Enter sudoku here!!!
     # The numbers are the cells in the sudoku
-    #first_array = [
-    #    [0, 0, 1, 0, 6, 0, 0, 5, 9],
-    #    [0, 0, 0, 0, 0, 3, 0, 2, 0],
-    #    [0, 6, 0, 0, 8, 0, 0, 0, 0],
-    #    [4, 0, 0, 0, 0, 0, 5, 0, 0],
-    #    [0, 2, 0, 0, 0, 0, 0, 0, 0],
-    #    [0, 7, 0, 2, 0, 0, 4, 8, 0],
-    #    [8, 0, 0, 0, 0, 0, 9, 0, 5],
-    #    [7, 0, 0, 6, 0, 9, 0, 3, 0],
-    #    [0, 0, 5, 0, 0, 0, 0, 4, 0]
-    #]
     new_array = []
     first_array = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 0]
     ]
     first_array_flat = [x for y in first_array for x in y]
     new_array = np.nan_to_num(np.array(first_array.copy(), dtype=int))
@@ -87,14 +74,15 @@ def main():
     nums_to_click = []
 
     while ready is False:
-        # These 3 lines are necessary in all apps. It makes the window close instead of freeze when you press the close button
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
 
-            if event.type == pygame.MOUSEBUTTONDOWN:  # If a user presses a mouse button:
-                mouse_pos = event.pos  # Mouse position = event position
+            if event.type == pygame.MOUSEWHEEL:
+                selected_num = (selected_num+event.y-1) % 9 + 1
 
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = event.pos
                 if mouse_pos[1] > 600:
                     selected_num = range(1, 11)[max(0, (min(10, mouse_pos[0]//spacing-1)))]
                     if selected_num == 10:
@@ -106,6 +94,12 @@ def main():
                     first_array_flat = [x for y in first_array for x in y]
                     new_array = np.nan_to_num(np.array(first_array.copy(), dtype=int))
                     new_array_flat = [x for y in new_array for x in y]
+
+            elif event.type == pygame.KEYDOWN:
+                for i in range(1, 10):
+                    if event.key == eval(f"pygame.K_{i}"):
+                        selected_num = i
+                        break
 
         # Updates the screen. This is necessary otherwise the screen will freeze
         for pos, button in enumerate(nums_to_click):
@@ -131,21 +125,20 @@ def main():
         clock.tick(fps / 2)
 
     screen = pygame.display.set_mode((size[0], size[1]-100))
-    time_now = time.time()
+    time_now = datetime.datetime.now()
 
     while num_index < 81:
         new_array = np.reshape(new_array_flat, (9, 9))
         threebythree_box = new_array[(num_index // 27) * 3:(num_index // 27) * 3 + 3, num_index % 9 // 3 * 3:num_index % 9 // 3 * 3 + 3].tolist()
         crosshair_cells = new_array[num_index // 9, :].tolist() + new_array[:, num_index % 9].tolist() + [x for y in threebythree_box for x in y]
-
-        if num_index == 80 and first_array_flat[num_index] == 0:
+        if num_index == 80-first_array_flat[::-1].index(0):
             new_array[num_index // 9][num_index % 9] = [x for x in range(1, 10) if x not in crosshair_cells][-1]
             new_array_flat[num_index] = [x for x in range(1, 10) if x not in crosshair_cells][-1]
 
         # Removing the active num from crosshairs: Horizontal, Vertical, 3x3 Box
         crosshair_cells.pop(num_index % 9)
         crosshair_cells.pop(num_index // 9 + 8)
-        crosshair_cells.pop(16 + ((num_index % 9) // 9) * 3 + (num_index % 3))
+        crosshair_cells.pop(16 + num_index % 3 + num_index // 9 % 3 * 3)
 
         # Check if the number isn't one of the pre-defined one from the original sudoku\
         if first_array_flat[num_index] == 0:
@@ -181,10 +174,10 @@ def main():
 
         screen.blit(grids, (0, 0))
         render_screen()
-        if int((time.time() - time_now) * 100000 % 10) == 0:
+        if int((datetime.datetime.now() - time_now).microseconds % 10) == 0:
             pygame.display.flip()
 
-    print("Finished - " + str(round(time.time() - time_now, 4)) + "s")
+    print(f"Finished - {int((datetime.datetime.now() - time_now).total_seconds()*1000)}ms")
     for array_pos, array in enumerate(new_array):
         result_str = "\x1b[48;2;255;255;255m"
         if (array_pos+1) % 3 == 0 and 7 >= array_pos >= 2:
@@ -199,10 +192,7 @@ def main():
             else:
                 result_str += f"\x1b[38;2;0;0;0m{num} "
         result_str += "\x1b[0m"
-
         print(result_str)
-
-
 
     while True:
         for event in pygame.event.get():
