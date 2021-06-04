@@ -23,6 +23,7 @@ Measured on the following sudoku:<br>
 - Python visual: 9499ms
 - Python visual (uncapped): 13392ms
 - C++: 20ms
+- Ruby: 268ms
 
 ## Footage
 Visual (PyGame Window) and Console Output:
