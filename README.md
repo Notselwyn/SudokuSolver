@@ -3,7 +3,7 @@ Solves a sudoku in the matter of milliseconds.
 
 ## Usage
 - Define the sudoku in the code (unless using GUI).
-- Use "Sudoku Solver Back Track".cpp performance.
+- Use "Sudoku Solver Back Track".go or .cpp for performance.
 - Use "Sudoku Solver Back Track Visual".py for a visual representation.
 
 ## Benchmarks
