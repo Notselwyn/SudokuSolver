@@ -18,11 +18,12 @@ Measured on the following sudoku:<br>
 0, 0, 0, 4, 1, 9, 0, 0, 5<br>
 0, 0, 0, 0, 8, 0, 0, 7, 0<br>
 
+- Go: 5ms
+- C++: 20ms
+- Ruby: 268ms
 - Python: 329ms
 - Python visual: 9499ms
 - Python visual (uncapped): 13392ms
-- C++: 20ms
-- Ruby: 268ms
 
 ## Footage
 Visual (PyGame Window) and Console Output:
