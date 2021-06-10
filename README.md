@@ -20,6 +20,7 @@ Measured on the following sudoku:<br>
 
 - Go: 5ms
 - C++: 20ms
+- JavaScript: 124ms
 - Ruby: 268ms
 - Python: 329ms
 - Python visual: 9499ms
